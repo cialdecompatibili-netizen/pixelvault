@@ -36,7 +36,7 @@ def categoria_info(nome, artista, pixel):
     tipo_it = 'pixel art' if pixel else 'immagini'
     tipo_en = 'pixel art' if pixel else 'images'
     return dict(nome=nome, icona=ICONE['pixelart' if pixel else 'immagini'], en=nome,
-        desc='Collezione di %s di %s.' % (tipo_it, artista), desc_en='Collection of %s by %s.' % (tipo_en, artista), perm_en=slug(nome))
+        desc='Collezione NFT di %s di %s.' % (tipo_it, artista), desc_en='NFT collection of %s by %s.' % (tipo_en, artista), perm_en=slug(nome))
 
 def slug(t):
     t = unicodedata.normalize('NFKD', t).encode('ascii', 'ignore').decode()
@@ -134,14 +134,14 @@ def main():
         d['prodotti'].append({
             'tipo': 'digitale', 'id': pid, 'nome': nome, 'categoria': cid,
             'prezzo_centesimi': int(round(a.prezzo * 100)),
-            'descrizione': '%s di %s, %d x %d px.' % (tipo.capitalize(), a.artista, W, H), 'artista': a.artista, 'collezione': a.collezione, 'tipo_immagine': tipo,
-            'descrizione_completa': '\n'.join(['%s digitale di %s, collezione "%s": %d x %d pixel, formato %s.' % (tipo.capitalize(), a.artista, a.collezione, W, H, fmt),
+            'descrizione': 'NFT %s di %s, %d x %d px.' % (tipo, a.artista, W, H), 'artista': a.artista, 'collezione': a.collezione, 'tipo_immagine': tipo,
+            'descrizione_completa': '\n'.join(['NFT %s di %s, collezione "%s": %d x %d pixel, formato %s.' % (tipo, a.artista, a.collezione, W, H, fmt),
                 'Dopo l\'acquisto ricevi il file originale senza filigrana. L\'anteprima mostrata qui ha la filigrana.',
                 'Licenza: %s.' % a.licenza]),
             'immagine': 'assets/images/prodotti/%s.webp' % pid, 'icona': ic, 'visibile': True,
             'tr': {'en': {'nome': nome,
-                'descrizione': '%s by %s, %d x %d px.' % ('Pixel art' if a.pixelart else 'Image', a.artista, W, H),
-                'descrizione_completa': '\n'.join(['Digital %s by %s, collection "%s": %d x %d pixels, %s format.' % ('pixel art' if a.pixelart else 'image', a.artista, a.collezione, W, H, fmt),
+                'descrizione': 'NFT %s by %s, %d x %d px.' % ('pixel art' if a.pixelart else 'image', a.artista, W, H),
+                'descrizione_completa': '\n'.join(['NFT %s by %s, collection "%s": %d x %d pixels, %s format.' % ('pixel art' if a.pixelart else 'image', a.artista, a.collezione, W, H, fmt),
                     'After purchase you receive the original file without watermark. The preview shown here is watermarked.',
                     'License: %s.' % a.licenza_en])}}})
         scrivi('_negozio/%s.md' % pid, '---\nlayout: negozio-prodotto\ntitle: "%s"\npid: %s\npermalink: /negozio/%s/\ndescription: "%s"\nref: shop-prod-%s\n---\n' % (nome, pid, pid, 'Immagine digitale: ' + nome, pid))
