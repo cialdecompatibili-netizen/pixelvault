@@ -23,7 +23,8 @@ Uso: mettere le immagini in `C:\Users\mirco\Desktop\pixelvault_originali\_da_imp
 ## Da fare, in ordine
 1. **Pagamento**: oggi lo shop del template invia solo una "richiesta d'ordine" (tracker Apps Script, nessun pagamento, `ordini.tracker` vuoto). Serve un metodo reale: Stripe Payment Links o PayPal; per gli NFT anche pagamento in crypto.
 2. **Consegna automatica**: dopo il pagamento il cliente riceve un link temporaneo all'originale. Strada prevista: Cloudflare Worker (come quello dei contatti) + archivio R2 con link firmato a scadenza, collegato al webhook del pagamento.
-3. **NFT**: decidere se vendere (a) il file con un certificato/link, oppure (b) un vero NFT coniato su un marketplace (OpenSea o simili: servono wallet, costi di rete e regole della piattaforma).
+3. **NFT (deciso 1/11/2026: via di mezzo)**: ora si vende il file digitale in categoria 
+ft con scheda e impronta (sha256 in _indice.csv) come base di un certificato. L'NFT vero, coniato su un marketplace (servono wallet, costi di rete, regole della piattaforma), si aggiunge dopo, per le sole immagini che vendono meglio. Rete e marketplace da scegliere.
 4. **Testi legali**: licenze d'uso, rimborsi sui beni digitali, termini; verificare diritti sulle immagini generate con AI e le regole dei marketplace NFT. Per i testi serve verifica prima di pubblicarli.
 5. **Contenuti**: home, chi siamo, servizi con testi veri IT+EN (ora sono segnaposto del template).
 6. Automazione a monte: collegare il sistema `copilot immagini` alla cartella `_da_importare`, e titoli/descrizioni migliori dei semplici nomi file.
@@ -32,7 +33,7 @@ Uso: mettere le immagini in `C:\Users\mirco\Desktop\pixelvault_originali\_da_imp
 - Nome definitivo del sito/brand.
 - Prezzi e licenze (personale, commerciale, esclusiva).
 - Pagamento: Stripe, PayPal, crypto o tutti.
-- NFT: file con certificato, oppure NFT coniato (e su quale rete/marketplace).
+- NFT: rete e marketplace per la fase 2 (NFT coniato), quando si arriva li'.
 - Che tipo di immagini si vendono (stili, temi): serve per categorie, home e SEO.
 
 ## Regole editoriali
