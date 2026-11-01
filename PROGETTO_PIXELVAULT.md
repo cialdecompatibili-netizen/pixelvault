@@ -51,3 +51,16 @@ GitHub Pages e' **pubblico**. Nella repo ci sono SOLO le anteprime con filigrana
 - Nessuna promessa di guadagno o di rivalutazione degli NFT, ne' di rendimenti.
 - Dati e cifre solo verificati e con fonte.
 - IT + EN.
+
+## Logica NFT anonima, QR code e mercato (da Mirco, 1/11/2026)
+```
+acquisto -> si CONIA al momento dell'acquisto (lazy minting) -> proprietario ANONIMO (alias o wallet, mai nome reale)
+         -> il cliente riceve l'immagine con un QR code stampato sopra -> il QR porta a /verifica/?id=<opera>
+         -> la pagina mostra: opera, collezione, artista, PROPRIETARIO, data, registro/tx, se e' in vendita e a che prezzo
+```
+- **Copiare l'immagine non toglie la proprieta'**: chi vede una copia scansiona il QR e legge chi e' il proprietario vero. Il QR non impedisce la copia: da' la provenienza.
+- **Mercato secondario**: il proprietario puo' mettere l'opera in vendita (`registra_vendita.py --in-vendita 25`) e chiunque puo' fare un'offerta dalla pagina (oggi il bottone porta al modulo contatti con l'id dell'opera). Un passaggio di proprieta' si registra con `--rivendita` e resta nello storico.
+- **Dati pubblici**: `assets/data/proprietari.json` e' pubblico. Solo alias o indirizzo wallet, mai nomi, email o dati personali. Un wallet e' comunque visibile on-chain.
+- **Strumenti**: `automation/registra_vendita.py` (registro + QR sul file da consegnare, che resta in `pixelvault_originali\consegna\`, mai in repo); pagine `/verifica/` e `/en/verify/`.
+- **Da fare per farlo vero**: coniare davvero (rete, contratto, costi di rete a carico di chi), collegare il pagamento al coniamento e alla registrazione automatica, modulo offerte con notifica al proprietario, commissione sulle rivendite (royalty all'artista).
+- **Da verificare prima di lanciare**: normativa su vendita di cripto-attivi e antiriciclaggio (identificazione degli acquirenti nonostante l'anonimato pubblico), tasse sulle commissioni, diritti sulle immagini, regole dei marketplace. Nessuna promessa di guadagno o rivalutazione.
