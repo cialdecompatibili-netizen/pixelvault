@@ -1,3 +1,5 @@
+**PROGETTO: leggi PRIMA `PROGETTO_PIXELVAULT.md` (negozio di immagini e file NFT, automazione `automation/aggiungi_immagini.py`, originali FUORI dalla repo).**
+
 # mistraltemplate1 - guida per Claude (template Jekyll adattivo)
 
 Template Jekyll per GitHub Pages: si clona, si cambia quasi solo `_config.yml` e il sito si adatta (lingua, URL, brand, menu, shop). Obiettivo e stato del lavoro: `PROGETTO_TEMPLATE.md`.
