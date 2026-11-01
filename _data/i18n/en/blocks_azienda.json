@@ -3,12 +3,12 @@
     "id": "chi",
     "nome": "About us",
     "enabled": true,
-    "html": "<div class=\"gc\"><section class=\"gc-sec\" id=\"chi\"><div class=\"gc-wrap\"><p class=\"gc-eyebrow\">About us</p><h2 class=\"gc-h2\">Title of the introduction</h2><p class=\"gc-lead\">Who you are, what you do and for whom.</p><p>One more paragraph about how you work.</p></div></section></div>"
+    "html": "<div class=\"gc\"><section class=\"gc-sec\" id=\"chi\"><div class=\"gc-wrap\"><p class=\"gc-eyebrow\">About us</p><h2 class=\"gc-h2\">An archive of pixel art NFT collections</h2><p class=\"gc-lead\">PixelVault gathers pixel art and digital images, organized in collections and signed by their artist.</p><p>Every piece is an NFT. The QR code on the image leads to a public page saying who owns it: the owner stays anonymous, only an alias or a wallet address is shown.</p></div></section></div>"
   },
   {
     "id": "principi",
     "nome": "Principles",
     "enabled": true,
-    "html": "<div class=\"gc\"><section class=\"gc-sec gc-soft\" id=\"principi\"><div class=\"gc-wrap\"><h2 class=\"gc-h2\">How we behave</h2><div class=\"gc-plat\"><div class=\"gc-pl\"><span class=\"n\">1</span><b>First principle</b><p>Short description.</p></div><div class=\"gc-pl\"><span class=\"n\">2</span><b>Second principle</b><p>Short description.</p></div><div class=\"gc-pl\"><span class=\"n\">3</span><b>Third principle</b><p>Short description.</p></div></div></div></section></div>"
+    "html": "<div class=\"gc\"><section class=\"gc-sec gc-soft\" id=\"principi\"><div class=\"gc-wrap\"><p class=\"gc-eyebrow\">How we work</p><h2 class=\"gc-h2\">Three simple rules</h2><div class=\"gc-plat ent-4\"><div class=\"gc-pl ent-pl\"><b>Clarity</b><ul><li>Price and license written on the page</li><li>Ownership can be checked with a QR</li></ul></div><div class=\"gc-pl ent-pl\"><b>Artists first</b><ul><li>Every piece shows who created it</li><li>Themed collections, one at a time</li></ul></div><div class=\"gc-pl ent-pl\"><b>No promises</b><ul><li>An NFT is not an investment</li><li>No returns or price rises promised</li></ul></div></div></div></section></div>"
   }
 ]

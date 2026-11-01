@@ -64,3 +64,17 @@ acquisto -> si CONIA al momento dell'acquisto (lazy minting) -> proprietario ANO
 - **Strumenti**: `automation/registra_vendita.py` (registro + QR sul file da consegnare, che resta in `pixelvault_originali\consegna\`, mai in repo); pagine `/verifica/` e `/en/verify/`.
 - **Da fare per farlo vero**: coniare davvero (rete, contratto, costi di rete a carico di chi), collegare il pagamento al coniamento e alla registrazione automatica, modulo offerte con notifica al proprietario, commissione sulle rivendite (royalty all'artista).
 - **Da verificare prima di lanciare**: normativa su vendita di cripto-attivi e antiriciclaggio (identificazione degli acquirenti nonostante l'anonimato pubblico), tasse sulle commissioni, diritti sulle immagini, regole dei marketplace. Nessuna promessa di guadagno o rivalutazione.
+
+## Stato del sito (1/11/2026) - cosa c'e' online
+- **Home** IT+EN (collezioni NFT di pixel art per artista), **Chi siamo** IT+EN, menu: Home, Blog, Shop, Chi siamo, Contatti.
+- **Shop**: UN SOLO prodotto demo, `prime-luci-demo` (pixel art 64x40, collezione "Prime luci", artista "PixelVault", prezzo 9,00 EUR = SEGNAPOSTO). Non e' in vendita: manca pagamento/coniamento. Da togliere o sostituire al lancio.
+- **Blog**: categorie Guide e Novita'. 2 articoli veri IT+EN: "Cos'e' la pixel art..." (Guide) e "PixelVault apre con una prima opera demo" (Novita'). Gli articoli di prova del template sono stati cancellati.
+- **Verifica proprietario**: `/verifica/?id=<id>` e `/en/verify/?id=<id>`. Il registro `assets/data/proprietari.json` e' vuoto: l'opera demo non ha proprietario. Per provare la pagina: `python automation\registra_vendita.py --id prime-luci-demo --proprietario "alias-prova"` (poi toglierlo dal json).
+
+## Istruzioni operative (come si lavora)
+1. **Nuove opere**: mettere le immagini in `C:\Users\mirco\Desktop\pixelvault_originali\_da_importare`, poi `python automation\aggiungi_immagini.py --collezione "Nome" --artista "Nome" [--pixelart] [--prezzo 9.00] [--push]`. Crea anteprima con filigrana, scheda IT+EN e collezione. L'originale va FUORI dalla repo.
+2. **Dopo una vendita**: `python automation\registra_vendita.py --id <id> --proprietario "<alias o wallet>" [--tx HASH] --push` (aggiorna il registro pubblico e crea in `pixelvault_originali\consegna\` il file con il QR da consegnare). Rivendita: `--rivendita`. Messa in vendita: `--in-vendita 25`.
+3. **Articoli**: `_posts/` (IT) e `en/_posts/` (EN) con stesso `ref:`; categorie `Guide`/`Novita'` (EN `Guides`/`News`). Niente promesse di guadagno.
+4. **Testi**: home e Chi siamo in `_data/blocks_home.json` e `_data/blocks_azienda.json` (+ `_data/i18n/en/`). Solo il campo `html`.
+5. **Pubblicare**: commit e push; la build di GitHub Pages ci mette 1-2 minuti.
+6. **Mai** mettere originali o file consegnati in `assets/`. **Mai** nomi reali o email nel registro proprietari.

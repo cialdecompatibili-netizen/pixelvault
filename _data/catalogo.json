@@ -2,12 +2,14 @@
   "_nota": "Catalogo dello shop (serve solo con ecommerce: true in _config.yml). Prezzi in CENTESIMI. Ogni prodotto/categoria ha anche una pagina in _negozio/ (layout negozio-prodotto con pid=<id>, negozio-categoria con cid=<id>). L'id categoria e' riservato. tipo: digitale (niente spedizione) o fisico. visibile:false nasconde senza cancellare. TRADUZIONI: ogni categoria/prodotto puo' avere \"tr\": {\"en\": {\"nome\": \"...\", \"descrizione\": \"...\", \"descrizione_completa\": \"...\"}}; campo mancante = si usa l'italiano.",
   "categorie": [
     {
-      "nome": "Esempio",
-      "id": "esempio",
-      "icona": "🛍️",
+      "nome": "Prime luci",
+      "id": "prime-luci",
+      "icona": "👾",
+      "descrizione": "Collezione NFT di pixel art di PixelVault.",
       "tr": {
         "en": {
-          "nome": "Example"
+          "nome": "Prime luci",
+          "descrizione": "NFT collection of pixel art by PixelVault."
         }
       }
     }
@@ -15,20 +17,23 @@
   "prodotti": [
     {
       "tipo": "digitale",
-      "id": "prodotto-esempio",
-      "nome": "Prodotto di esempio",
-      "categoria": "esempio",
-      "prezzo_centesimi": 1000,
-      "descrizione": "Descrizione breve del prodotto di esempio.",
-      "descrizione_completa": "Descrizione completa del prodotto.\nOgni riga diventa un paragrafo.",
-      "immagine": "",
-      "icona": "🛍️",
+      "id": "prime-luci-demo",
+      "nome": "Prime luci demo",
+      "categoria": "prime-luci",
+      "prezzo_centesimi": 900,
+      "descrizione": "NFT pixel art di PixelVault, 64 x 40 px.",
+      "artista": "PixelVault",
+      "collezione": "Prime luci",
+      "tipo_immagine": "pixel art",
+      "descrizione_completa": "NFT pixel art di PixelVault, collezione \"Prime luci\": 64 x 40 pixel, formato PNG.\nDopo l'acquisto ricevi il file originale senza filigrana. L'anteprima mostrata qui ha la filigrana.\nLicenza: Licenza personale e commerciale singola (da confermare).",
+      "immagine": "assets/images/prodotti/prime-luci-demo.webp",
+      "icona": "👾",
       "visibile": true,
       "tr": {
         "en": {
-          "nome": "Example product",
-          "descrizione": "Short description of the example product.",
-          "descrizione_completa": "Full description of the product.\nEach line becomes a paragraph."
+          "nome": "Prime luci demo",
+          "descrizione": "NFT pixel art by PixelVault, 64 x 40 px.",
+          "descrizione_completa": "NFT pixel art by PixelVault, collection \"Prime luci\": 64 x 40 pixels, PNG format.\nAfter purchase you receive the original file without watermark. The preview shown here is watermarked.\nLicense: Single personal and commercial license (to be confirmed)."
         }
       }
     }
