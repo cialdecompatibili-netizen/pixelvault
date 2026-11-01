@@ -4,7 +4,7 @@ aggiungi_immagini.py - dalla cartella di immagini al negozio, in un colpo solo.
 
 Uso (da qualsiasi posto):
   python automation\aggiungi_immagini.py                      # prende tutto da ...\pixelvault_originali\_da_importare
-  python automation\aggiungi_immagini.py --nft                # le mette in categoria NFT invece che Immagini
+  python automation\aggiungi_immagini.py --collezione "Paesaggi 8-bit" --artista "Nome" --pixelart
   python automation\aggiungi_immagini.py --prezzo 7.90 --licenza "Uso commerciale singolo"
   python automation\aggiungi_immagini.py --push               # dopo, commit e push
 
@@ -13,7 +13,8 @@ Cosa fa per ogni immagine:
      l'originale in repo si potrebbe scaricare gratis). Scrive anche originali\_indice.csv (id, file, sha256) per la consegna dopo il pagamento.
   2. ANTEPRIMA con filigrana (lato lungo 1000 px, webp) -> assets/images/prodotti/<id>.webp  (questa e' l'unica cosa pubblica)
   3. Scheda prodotto in _data/catalogo.json + pagine _negozio/<id>.md e en/negozio/<id>.md (IT+EN, idempotente: se l'id esiste lo salta)
-  4. Categorie "immagini" e "nft" create se mancano; esempi del template tolti alla prima esecuzione.
+  4. La COLLEZIONE (= categoria dello shop) viene creata se manca; ogni prodotto ha anche artista e tipo (pixel art / immagine).
+     Con --pixelart l'anteprima e' ingrandita SENZA sfumare i pixel (nearest). Esempi del template tolti alla prima esecuzione.
 Il nome del file diventa titolo e id: "tramonto_sul_lago.png" -> "Tramonto sul lago". Poi si rifinisce dall'admin.
 PREZZO e LICENZA di default sono segnaposto da confermare.
 """
@@ -29,13 +30,13 @@ CAT = os.path.join(R, '_data', 'catalogo.json')
 EXT = ('.png', '.jpg', '.jpeg', '.webp', '.tif', '.tiff', '.bmp')
 BRAND = 'PIXELVAULT'
 
-CATEGORIE = {
-    'immagini': dict(nome='Immagini', icona='\U0001F5BC', en='Images',
-        desc='Immagini digitali ad alta risoluzione, pronte da scaricare e usare.',
-        desc_en='High-resolution digital images, ready to download and use.', perm_en='images'),
-    'nft': dict(nome='File NFT', icona='\U0001F48E', en='NFT files',
-        desc='File digitali collezionabili, anche in versione NFT.', desc_en='Collectible digital files, also available as NFT.', perm_en='nft-files'),
-}
+ICONE = {'pixelart': '\U0001F47E', 'immagini': '\U0001F5BC'}
+
+def categoria_info(nome, artista, pixel):
+    tipo_it = 'pixel art' if pixel else 'immagini'
+    tipo_en = 'pixel art' if pixel else 'images'
+    return dict(nome=nome, icona=ICONE['pixelart' if pixel else 'immagini'], en=nome,
+        desc='Collezione di %s di %s.' % (tipo_it, artista), desc_en='Collection of %s by %s.' % (tipo_en, artista), perm_en=slug(nome))
 
 def slug(t):
     t = unicodedata.normalize('NFKD', t).encode('ascii', 'ignore').decode()
@@ -55,9 +56,13 @@ def font(px):
         except Exception: pass
     return ImageFont.load_default()
 
-def anteprima(img, dest):
+def anteprima(img, dest, pixel=False):
     """Lato lungo 1000 px + filigrana diagonale ripetuta (si toglie male, ma l'originale non e' comunque online)."""
-    im = img.convert('RGB'); im.thumbnail((1000, 1000))
+    im = img.convert('RGB')
+    if pixel:   # pixel art: ingrandisce a multipli interi senza sfumare, cosi' i pixel restano netti
+        k = max(1, 1000 // max(im.size)); im = im.resize((im.size[0] * k, im.size[1] * k), Image.NEAREST)
+    else:
+        im.thumbnail((1000, 1000))
     w, h = im.size
     layer = Image.new('RGBA', (w * 2, h * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(layer)
     f = font(max(22, w // 18))
@@ -67,7 +72,7 @@ def anteprima(img, dest):
     layer = layer.rotate(30, resample=Image.BICUBIC).crop((w // 2, h // 2, w // 2 + w, h // 2 + h))
     im = Image.alpha_composite(im.convert('RGBA'), layer).convert('RGB')
     os.makedirs(os.path.dirname(dest), exist_ok=True)
-    im.save(dest, 'WEBP', quality=78)
+    im.save(dest, 'WEBP', quality=90 if pixel else 78)
 
 def carica_catalogo():
     d = json.load(io.open(CAT, encoding='utf-8'))
@@ -80,9 +85,8 @@ def carica_catalogo():
             if os.path.exists(p): os.remove(p)
     return d
 
-def assicura_categoria(d, cid):
-    if any(c['id'] == cid for c in d['categorie']): return
-    c = CATEGORIE[cid]
+def assicura_categoria(d, cid, c):
+    if any(c0['id'] == cid for c0 in d['categorie']): return
     d['categorie'].append({'nome': c['nome'], 'id': cid, 'icona': c['icona'], 'descrizione': c['desc'],
                            'tr': {'en': {'nome': c['en'], 'descrizione': c['desc_en']}}})
     scrivi('_negozio/categoria-%s.md' % cid, '---\nlayout: negozio-categoria\ntitle: "%s"\ncid: %s\npermalink: /negozio/categoria/%s/\ndescription: "%s"\nref: shop-cat-%s\n---\n' % (c['nome'], cid, cid, c['desc'], cid))
@@ -90,7 +94,9 @@ def assicura_categoria(d, cid):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--nft', action='store_true', help='categoria File NFT')
+    ap.add_argument('--collezione', default='Nuove immagini', help='nome collezione (= categoria shop), creata se manca')
+    ap.add_argument('--artista', default='PixelVault', help='nome artista mostrato sulle schede')
+    ap.add_argument('--pixelart', action='store_true', help='sono pixel art (anteprima nitida)')
     ap.add_argument('--prezzo', type=float, default=4.90, help='euro (default 4.90, SEGNAPOSTO)')
     ap.add_argument('--licenza', default='Licenza personale e commerciale singola (da confermare)')
     ap.add_argument('--licenza-en', default='Single personal and commercial license (to be confirmed)')
@@ -101,8 +107,9 @@ def main():
     if not files:
         print('Nessuna immagine in', DA_IMPORTARE); return
     d = carica_catalogo()
-    cid = 'nft' if a.nft else 'immagini'
-    assicura_categoria(d, cid)
+    cid = slug(a.collezione); cinfo = categoria_info(a.collezione, a.artista, a.pixelart)
+    assicura_categoria(d, cid, cinfo)
+    tipo = 'pixel art' if a.pixelart else 'immagine'
     esistenti = {p['id'] for p in d['prodotti']}
     idx_path = os.path.join(OUT_ORIG, '_indice.csv')
     nuovo_idx = not os.path.exists(idx_path)
@@ -116,29 +123,27 @@ def main():
             print('  salto (id gia presente):', pid); continue
         src = os.path.join(DA_IMPORTARE, f)
         img = Image.open(src); W, H = img.size
-        anteprima(img, os.path.join(ANTEPRIMA_DIR, pid + '.webp'))
+        anteprima(img, os.path.join(ANTEPRIMA_DIR, pid + '.webp'), a.pixelart)
         img.close()
         h = hashlib.sha256(io.open(src, 'rb').read()).hexdigest()
         dest = os.path.join(OUT_ORIG, pid + os.path.splitext(f)[1].lower())
         shutil.move(src, dest)
         wr.writerow([pid, os.path.basename(dest), h])
         nome = titolo(f); fmt = os.path.splitext(f)[1][1:].upper().replace('JPEG', 'JPG')
-        ic = CATEGORIE[cid]['icona']
-        riga_nft = ['Disponibile anche come NFT: chiedi i dettagli.'] if a.nft else []
-        riga_nft_en = ['Also available as an NFT: ask for details.'] if a.nft else []
+        ic = cinfo['icona']
         d['prodotti'].append({
             'tipo': 'digitale', 'id': pid, 'nome': nome, 'categoria': cid,
             'prezzo_centesimi': int(round(a.prezzo * 100)),
-            'descrizione': 'Immagine digitale ad alta risoluzione, %d x %d px.' % (W, H),
-            'descrizione_completa': '\n'.join(['Immagine digitale ad alta risoluzione: %d x %d pixel, formato %s.' % (W, H, fmt),
+            'descrizione': '%s di %s, %d x %d px.' % (tipo.capitalize(), a.artista, W, H), 'artista': a.artista, 'collezione': a.collezione, 'tipo_immagine': tipo,
+            'descrizione_completa': '\n'.join(['%s digitale di %s, collezione "%s": %d x %d pixel, formato %s.' % (tipo.capitalize(), a.artista, a.collezione, W, H, fmt),
                 'Dopo l\'acquisto ricevi il file originale senza filigrana. L\'anteprima mostrata qui ha la filigrana.',
-                'Licenza: %s.' % a.licenza] + riga_nft),
+                'Licenza: %s.' % a.licenza]),
             'immagine': 'assets/images/prodotti/%s.webp' % pid, 'icona': ic, 'visibile': True,
             'tr': {'en': {'nome': nome,
-                'descrizione': 'High-resolution digital image, %d x %d px.' % (W, H),
-                'descrizione_completa': '\n'.join(['High-resolution digital image: %d x %d pixels, %s format.' % (W, H, fmt),
+                'descrizione': '%s by %s, %d x %d px.' % ('Pixel art' if a.pixelart else 'Image', a.artista, W, H),
+                'descrizione_completa': '\n'.join(['Digital %s by %s, collection "%s": %d x %d pixels, %s format.' % ('pixel art' if a.pixelart else 'image', a.artista, a.collezione, W, H, fmt),
                     'After purchase you receive the original file without watermark. The preview shown here is watermarked.',
-                    'License: %s.' % a.licenza_en] + riga_nft_en)}}})
+                    'License: %s.' % a.licenza_en])}}})
         scrivi('_negozio/%s.md' % pid, '---\nlayout: negozio-prodotto\ntitle: "%s"\npid: %s\npermalink: /negozio/%s/\ndescription: "%s"\nref: shop-prod-%s\n---\n' % (nome, pid, pid, 'Immagine digitale: ' + nome, pid))
         scrivi('en/negozio/%s.md' % pid, '---\nlayout: negozio-prodotto\ntitle: "%s"\npid: %s\npermalink: /en/shop/%s/\ndescription: "%s"\nlang: en\nlocale: en\nref: shop-prod-%s\n---\n' % (nome, pid, pid, 'Digital image: ' + nome, pid))
         print('  OK', pid, '(%dx%d)' % (W, H)); fatti += 1
